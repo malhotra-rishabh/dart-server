@@ -8,6 +8,7 @@ class HttpParser {
     final requestLine = lines.first.split(' ');
     final method = requestLine[0];
     final path = requestLine[1];
+    final uri = Uri.parse(path);
 
     final headers = <String, String>{};
     int i = 1;
@@ -29,6 +30,6 @@ class HttpParser {
     final parser = parserFactory.intializeParser(contentType);
     final parsedBody = parser.parse(body);
 
-    return Request(method, path, headers, parsedBody);
+    return Request(method, uri.path, headers, parsedBody, uri.queryParameters, {});
   }
 }

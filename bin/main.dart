@@ -7,8 +7,8 @@ void main() {
     res.body = "GET working";
   });
 
-  router.post('/user', (req, res) {
-    res.body = "POST body: ${req.body}";
+  router.post('/user/:id', (req, res) {
+    res.body = "POST body: ${req.body}, ${req.query}, ${req.params}";
   });
 
   router.put('/user', (req, res) {

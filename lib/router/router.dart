@@ -34,15 +34,23 @@ class Router {
   }
 
   void handle(Request req, Response res) {
-    final route = _routes.firstWhere(
-      (r) => r.method == req.method && r.path == req.path,
-      orElse: () => Route(req.method, "", (req, res) {
-        res.statusCode = 404;
-        res.statusMessage = "Not Found";
-        res.body = "Route not found";
-      }),
-    );
+    for (final route in _routes) {
+      if (route.method != req.method) continue;
 
-    route.handler(req, res);
+      final match = route.regex.firstMatch(req.path);
+      if (match != null) {
+        // Extract path params
+        for (int i = 0; i < route.paramNames.length; i++) {
+          req.params[route.paramNames[i]] = match.group(i + 1)!;
+        }
+
+        route.handler(req, res);
+        return;
+      }
+    }
+
+    res.statusCode = 404;
+    res.statusMessage = "Not Found";
+    res.body = "Route not found";
   }
 }
