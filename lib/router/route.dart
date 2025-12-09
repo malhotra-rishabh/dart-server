@@ -2,6 +2,7 @@ import '../http/request.dart';
 import '../http/response.dart';
 
 typedef Handler = void Function(Request req, Response res);
+typedef Middleware = void Function(Request req, Response res);
 
 class Route {
   final String method;
@@ -9,8 +10,9 @@ class Route {
   late final RegExp regex;
   late final List<String> paramNames;
   final Handler handler;
+  final List<Middleware>? middleware;
 
-  Route(this.method, this.pattern, this.handler) {
+  Route(this.method, this.pattern, this.handler, [this.middleware]) {
     paramNames = [];
 
     final regexPattern = pattern.replaceAllMapped(

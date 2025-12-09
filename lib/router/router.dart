@@ -5,32 +5,32 @@ import '../http/response.dart';
 class Router {
   final List<Route> _routes = [];
 
-  void get(String path, Handler handler) {
-    _routes.add(Route("GET", path, handler));
+  void get(String path, Handler handler, [List<Middleware>? middleware]) {
+    _routes.add(Route("GET", path, handler, middleware));
   }
 
-  void post(String path, Handler handler) {
-    _routes.add(Route("POST", path, handler));
+  void post(String path, Handler handler, [List<Middleware>? middleware]) {
+    _routes.add(Route("POST", path, handler, middleware));
   }
 
-  void put(String path, Handler handler) {
-    _routes.add(Route("PUT", path, handler));
+  void put(String path, Handler handler, [List<Middleware>? middleware]) {
+    _routes.add(Route("PUT", path, handler, middleware));
   } 
 
-  void delete(String path, Handler handler) {
-    _routes.add(Route("DELETE", path, handler));
+  void delete(String path, Handler handler, [List<Middleware>? middleware]) {
+    _routes.add(Route("DELETE", path, handler, middleware));
   }
 
-  void patch(String path, Handler handler) {
-    _routes.add(Route("PATCH", path, handler));
+  void patch(String path, Handler handler, [List<Middleware>? middleware]) {
+    _routes.add(Route("PATCH", path, handler, middleware));
   }
 
-  void options(String path, Handler handler) {
-    _routes.add(Route("OPTIONS", path, handler));
+  void options(String path, Handler handler, [List<Middleware>? middleware]) {
+    _routes.add(Route("OPTIONS", path, handler, middleware));
   }
 
-  void head(String path, Handler handler) {
-    _routes.add(Route("HEAD", path, handler));
+  void head(String path, Handler handler, [List<Middleware>? middleware]) {
+    _routes.add(Route("HEAD", path, handler, middleware));
   }
 
   void handle(Request req, Response res) {
@@ -44,6 +44,12 @@ class Router {
           req.params[route.paramNames[i]] = match.group(i + 1)!;
         }
 
+        // Execute middleware if any
+        if (route.middleware != null) {
+          for (final mw in route.middleware!) {
+            mw(req, res);
+          }
+        }
         route.handler(req, res);
         return;
       }

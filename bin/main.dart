@@ -7,7 +7,7 @@ void main() {
 
   router.get('/', (req, res) {
     res.body = "GET working";
-  });
+  }, [(req, res) => { print("Middleware executed") }, (req, res) => { print("Another middleware") }]);
 
   router.post('/user/:id', (req, res) {
     res.body = "POST body: ${req.body}, ${req.query}, ${req.params}";
